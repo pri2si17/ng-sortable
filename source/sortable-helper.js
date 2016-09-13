@@ -271,7 +271,7 @@
             },
             apply: function () {
 
-              if (angular.isDefined(this.parent.callbacks.apply)) {
+              if (this.parent.callbacks.apply !== null) {
                 this.parent.callbacks.apply( this.sourceInfo.index,
                                              this.index,
                                              this );
