@@ -311,6 +311,14 @@
               };
             },
             apply: function () {
+
+              if (angular.isDefined(this.parent.callbacks.apply)) {
+                this.parent.callbacks.apply( this.sourceInfo.index,
+                                             this.index,
+                                             this );
+                return;
+              }
+
               if (!this.sourceInfo.sortableScope.cloning) {
                 // if not cloning, remove the item from the source model.
                 this.sourceInfo.sortableScope.removeItem(this.sourceInfo.index);
@@ -463,7 +471,7 @@
           scope.element = element;
           element.data('_scope',scope); // #144, work with angular debugInfoEnabled(false)
 
-          callbacks = {accept: null, orderChanged: null, itemMoved: null, dragStart: null, dragMove:null, dragCancel: null, dragEnd: null};
+          callbacks = {accept: null, apply: null, orderChanged: null, itemMoved: null, dragStart: null, dragMove:null, dragCancel: null, dragEnd: null};
 
           /**
            * Invoked to decide whether to allow drop.
@@ -529,7 +537,7 @@
           //Set the sortOptions callbacks else set it to default.
           scope.$watch(attrs.asSortable, function (newVal, oldVal) {
             angular.forEach(newVal, function (value, key) {
-              if (callbacks[key]) {
+              if ((callbacks[key]) || (callbacks[key] === null)) {
                 if (typeof value === 'function') {
                   callbacks[key] = value;
                 }

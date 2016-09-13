@@ -270,6 +270,14 @@
               };
             },
             apply: function () {
+
+              if (angular.isDefined(this.parent.callbacks.apply)) {
+                this.parent.callbacks.apply( this.sourceInfo.index,
+                                             this.index,
+                                             this );
+                return;
+              }
+
               if (!this.sourceInfo.sortableScope.cloning) {
                 // if not cloning, remove the item from the source model.
                 this.sourceInfo.sortableScope.removeItem(this.sourceInfo.index);

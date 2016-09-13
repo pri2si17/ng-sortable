@@ -1,3 +1,52 @@
+﻿
+-----------------------
+Forked to Add:
+==============
+Added a callback to override `apply`.  The `apply` is called when the item is dropped.  The arguments are: 
+ - `srcIndex`, the index of the source being dragged   
+ - `destIndex`, the index of the destination for the dragged item
+ - `ngSortThis` the `this` object from ng-sortable 
+ 
+This `apply` override can be used to fix displaying an array of strings that use `track by $index`.  The baseline code will delete items on some moves.  I've tried various alternative solutions with no success.
+
+For example,
+
+```
+<ul as-sortable="dragControlListeners" 
+    data-ng-model="list">
+    <li ng-repeat="item in list track by $index"
+        as-sortable-item>
+
+        <div as-sortable-item-handle>
+            <div class="row">
+                <div class="col-sm-12">
+                    <input type="text"
+                        required
+                        class="form-control input-sm"
+                        ng-model="list[$index]"
+                        placeholder="Unique Name">
+                </div>
+            </div>
+        </div>
+
+    </li>
+</ul>
+```                                
+
+```
+vm.dragControlListeners = {
+
+    apply: function( srcIdx, destIdx, ngSortObj ) {
+        // Process the move
+        //------------------
+        var scrVal = ngSortObj.parent.modelValue [ srcIdx ];
+        ngSortObj.parent.modelValue.splice( srcIdx, 1 );
+        ngSortObj.parent.modelValue.splice( destIdx, 0, scrVal );
+    }
+};
+```
+
+-----------------------
 
 ng-sortable
 ==============
